@@ -1,0 +1,148 @@
+<template>
+    <div>
+        <v-list two-line v-if="list.length > 0">
+            <v-list-item-group 
+                    v-model="selected" 
+                    color="primary"
+                    @change="select"
+            >
+                <v-list-item v-for="(item, idx) in list" :key="idx">
+                    <template v-slot:default="{ active }">
+                        <v-list-item-avatar color="primary-darker-1">
+                        </v-list-item-avatar>
+                        
+                        <v-list-item-content>
+                            <v-list-item-title>
+                            </v-list-item-title>
+                            <v-list-item-subtitle>
+                                DriverEmpNo :  {{item.driverEmpNo }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                Name :  {{item.name }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                CompanyCode :  {{item.companyCode }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                WorksCode :  {{item.worksCode }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                HrAccessLevel :  {{item.hrAccessLevel }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                SupervisorType :  {{item.supervisorType }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                CurrentJob :  {{item.currentJob }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                HandPhone :  {{item.handPhone }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                LicenseNumber :  {{item.licenseNumber }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                NationalIdentifier :  {{item.nationalIdentifier }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                ResourceId :  {{item.resourceId }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                CarType :  {{item.carType }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                RetirementFlag :  {{item.retirementFlag }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                RetiredDate :  {{item.retiredDate }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                                Description :  {{item.description }}
+                            </v-list-item-subtitle>
+                        </v-list-item-content>
+
+                        <v-list-item-action>
+                            <v-checkbox :input-value="active" color="primary-darker-1"></v-checkbox>
+                        </v-list-item-action>
+                    </template>
+                </v-list-item>
+            </v-list-item-group>
+        </v-list>
+    </div>
+</template>
+
+
+<script>
+    const axios = require('axios').default;
+
+    export default {
+        name: 'CarmngDriverPicker',
+        props: {
+            value: [String, Object, Array, Number, Boolean],
+        },
+        data: () => ({
+            list: [],
+            selected: null,
+        }),
+        async created() {
+            var me = this;
+            var temp = await axios.get(axios.fixUrl('/drivers'))
+            if(temp.data) {
+                me.list = temp.data._embedded.drivers;
+            }
+
+            if(me.value && typeof me.value == "object" && Object.values(me.value)[0]) {
+                var id = Object.values(me.value)[0];
+                var tmpValue = await axios.get(axios.fixUrl('/drivers/' + id))
+                if(tmpValue.data) {
+                    var val = tmpValue.data
+                    me.list.forEach(function(item, idx) {
+                        if(item.name == val.name) {
+                            me.selected = idx
+                        }
+                    })
+                }
+            }
+        },
+        methods: {
+            select(val) {
+                var obj = {}
+                if(val != undefined) {
+                    var arr = this.list[val]._links.self.href.split('/');
+                    obj['driverEmpNo'] = arr[4]; 
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    this.$emit('selected', obj);
+                }
+            },
+        },
+    };
+</script>
+
